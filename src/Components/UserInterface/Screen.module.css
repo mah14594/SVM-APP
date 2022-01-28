@@ -1,0 +1,10 @@
+.screen{
+    background-color: white;
+    border-radius: 5px;
+    border:2px solid black;
+    text-align: center;
+    line-height:20px;
+    padding: 20px;
+    width:100%;
+    font-weight: 600;
+}
