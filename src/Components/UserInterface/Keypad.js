@@ -10,6 +10,7 @@ export default function Keypad() {
   const [productexist, setproductexist] = useState(false); //to activate money action
   const [buttondisable, setbuttondisable] = useState(false);
   const [disableclear, setdisableclear] = useState(true);
+
   const enableclearhandler = () => {
     setdisableclear(false);
   };
@@ -29,34 +30,35 @@ export default function Keypad() {
   const itemexists = Products.findIndex(
     (item) => item.id === entredproductNumber
   );
-  let updateScreencontet = { P1: "", P2: "", P3: "" };
+  let updatedscreencontent = { P1: "", P2: "", P3: "" };
   const enterProductNumberHandler = () => {
     setdisableclear(true);
     if (itemexists === -1) {
-      updateScreencontet.P2 = "Enter a Valid product number please!";
+      updatedscreencontent.P2 = "Enter a Valid product number please!";
       setproductexist(false);
       dispatch(MachineActions.reset());
     } else {
       if (Products[itemexists].total === 0) {
-        updateScreencontet.P2 = "Sorry! this product is not available";
+        updatedscreencontent.P2 = "Sorry! this product is not available";
         setproductexist(false);
         dispatch(MachineActions.reset());
       } else {
         setproductexist(true);
         setdisableclear(true);
         setbuttondisable(true);
-        updateScreencontet.P1 = `avilable items: ${Products[itemexists].total}`;
-        updateScreencontet.P2 = "Enter the money in it's place";
-        updateScreencontet.P3 = `Price: ${Products[itemexists].price}$`;
+        updatedscreencontent.P1 = `avilable items: ${Products[itemexists].total}`;
+        updatedscreencontent.P2 = "Enter the money in it's place";
+        updatedscreencontent.P3 = `Price: ${Products[itemexists].price}$`;
       }
     }
-    dispatch(MachineActions.enterproductnumber(updateScreencontet));
+    dispatch(MachineActions.enterproductnumber(updatedscreencontent));
   };
   let Acceptedmoney = 0;
   let change = 0;
   const insertMoneyHandler = () => {
     const enteredMoney = +moneyRef.current.value;
     const itemPrice = Products[itemexists].price;
+
     if (
       enteredMoney === 0.1 ||
       enteredMoney === 0.2 ||
@@ -70,31 +72,34 @@ export default function Keypad() {
         setbuttondisable(false);
         setproductexist(false);
         dispatch(MachineActions.reset());
-        updateScreencontet.P1 = "";
-        updateScreencontet.P2 = "Take Your Product";
-        updateScreencontet.P3 = "";
+        updatedscreencontent.P1 = "";
+        updatedscreencontent.P2 = "Take Your Product";
+        updatedscreencontent.P3 = "";
       } else if (Acceptedmoney < itemPrice) {
-        updateScreencontet.P1 = `avilable items: ${Products[itemexists].total}`;
-        updateScreencontet.P2 = "Not Enough money ,insert More!";
-        updateScreencontet.P3 = `Price: ${Products[itemexists].price}$`;
+        updatedscreencontent.P1 = `avilable items: ${Products[itemexists].total}`;
+        updatedscreencontent.P2 = "Not Enough money ,insert More!";
+        updatedscreencontent.P3 = `Price: ${Products[itemexists].price}$`;
       } else {
         setbuttondisable(false);
         setproductexist(false);
         dispatch(MachineActions.reset());
         change += Acceptedmoney - itemPrice;
-        updateScreencontet.P1 = "Take your product";
-        updateScreencontet.P2 = "";
-        updateScreencontet.P3 = `Take your change: ${change}`;
+
+        updatedscreencontent.P1 = "Take your product";
+        updatedscreencontent.P2 = "";
+        updatedscreencontent.P3 = `Take the change: ${change.toFixed(1)}`;
       }
     } else {
       setbuttondisable(true);
-      updateScreencontet.P1 = updateScreencontet.P3 = "";
-      updateScreencontet.P2 =
-        "This Type of Money is not accepted! insert 0.1,0.2,0.5,1,20,50";
+      updatedscreencontent.P1 = updatedscreencontent.P3 = "";
+      updatedscreencontent.P2 =
+        "This Type of Money is not accepted! insert 0.1,0.2,0.5,1,20 or 50";
     }
-    console.log(Acceptedmoney);
-
-    dispatch(MachineActions.insertMoney(updateScreencontet));
+    const proccessingscreenContent = { P1: "", P2: "Processing", P3: "" };
+    dispatch(MachineActions.insertMoney(proccessingscreenContent));
+    setTimeout(() => {
+      dispatch(MachineActions.insertMoney(updatedscreencontent));
+    }, 3000); //time delay 3 seconds , that the machine takes to complete the proccess of checking the money , producing the product and the change to the customer
   };
   const ClearHandler = () => {
     dispatch(MachineActions.clearScreen());
@@ -114,12 +119,12 @@ export default function Keypad() {
         </div>
         {productexist && (
           <div className={`col-4 ${classes.moneyactions}`}>
-            <button onClick={insertMoneyHandler}>insert</button>
             <input
               placeholder="enter the money here"
               type="text"
               ref={moneyRef}
             />
+            <button onClick={insertMoneyHandler}>insert</button>
           </div>
         )}
       </div>
