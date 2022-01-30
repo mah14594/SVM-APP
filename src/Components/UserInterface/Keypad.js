@@ -27,18 +27,16 @@ export default function Keypad() {
   });
   const entredproductNumber = useSelector((state) => state.insertednumber); //get the product number entered with keypad
   const Products = useSelector((state) => state.initialProducts);
-  const itemexists = Products.findIndex(
-    (item) => item.id === entredproductNumber
-  );
+  const requiredItem = Products.find((item) => item.id === entredproductNumber);
   let updatedscreencontent = { P1: "", P2: "", P3: "" };
   const enterProductNumberHandler = () => {
     setdisableclear(true);
-    if (itemexists === -1) {
+    if (!requiredItem) {
       updatedscreencontent.P2 = "Enter a Valid product number please!";
       setproductexist(false);
       dispatch(MachineActions.reset());
     } else {
-      if (Products[itemexists].total === 0) {
+      if (requiredItem.total === 0) {
         updatedscreencontent.P2 = "Sorry! this product is not available";
         setproductexist(false);
         dispatch(MachineActions.reset());
@@ -46,9 +44,9 @@ export default function Keypad() {
         setproductexist(true);
         setdisableclear(true);
         setbuttondisable(true);
-        updatedscreencontent.P1 = `avilable items: ${Products[itemexists].total}`;
+        updatedscreencontent.P1 = `avilable items: ${requiredItem.total}`;
         updatedscreencontent.P2 = "Enter the money in it's place";
-        updatedscreencontent.P3 = `Price: ${Products[itemexists].price}$`;
+        updatedscreencontent.P3 = `Price: ${requiredItem.price}$`;
       }
     }
     dispatch(MachineActions.enterproductnumber(updatedscreencontent));
@@ -57,7 +55,7 @@ export default function Keypad() {
   let change = 0;
   const insertMoneyHandler = () => {
     const enteredMoney = +moneyRef.current.value;
-    const itemPrice = Products[itemexists].price;
+    const itemPrice = requiredItem.price;
 
     if (
       enteredMoney === 0.1 ||
@@ -76,9 +74,9 @@ export default function Keypad() {
         updatedscreencontent.P2 = "Take Your Product";
         updatedscreencontent.P3 = "";
       } else if (Acceptedmoney < itemPrice) {
-        updatedscreencontent.P1 = `avilable items: ${Products[itemexists].total}`;
+        updatedscreencontent.P1 = `avilable items: ${requiredItem.total}`;
         updatedscreencontent.P2 = "Not Enough money ,insert More!";
-        updatedscreencontent.P3 = `Price: ${Products[itemexists].price}$`;
+        updatedscreencontent.P3 = `Price: ${requiredItem.price}$`;
       } else {
         setbuttondisable(false);
         setproductexist(false);

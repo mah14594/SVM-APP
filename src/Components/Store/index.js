@@ -4,7 +4,7 @@ const Products = [
     id: "A1",
     title: "Snickers",
     price: 2,
-    total: 10,
+    total: 0,
     src: "../Images/Snickers.png",
   },
   {
