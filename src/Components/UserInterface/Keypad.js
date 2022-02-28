@@ -45,13 +45,13 @@ export default function Keypad() {
         setdisableclear(true);
         setbuttondisable(true);
         updatedscreencontent.P1 = `avilable items: ${requiredItem.total}`;
-        updatedscreencontent.P2 = "Enter the money in it's place";
+        updatedscreencontent.P2 = "The item is Avilable , insert the money";
         updatedscreencontent.P3 = `Price: ${requiredItem.price}$`;
       }
     }
     dispatch(MachineActions.enterproductnumber(updatedscreencontent));
   };
-  let Acceptedmoney = 0;
+  let acceptedMoney = 0;
   let change = 0;
   const insertMoneyHandler = () => {
     const enteredMoney = +moneyRef.current.value;
@@ -65,23 +65,23 @@ export default function Keypad() {
       enteredMoney === 20 ||
       enteredMoney === 50
     ) {
-      Acceptedmoney += enteredMoney;
-      if (Acceptedmoney === itemPrice) {
+      acceptedMoney += enteredMoney;
+      if (acceptedMoney === itemPrice) {
         setbuttondisable(false);
         setproductexist(false);
         dispatch(MachineActions.reset());
         updatedscreencontent.P1 = "";
         updatedscreencontent.P2 = "Take Your Product";
         updatedscreencontent.P3 = "";
-      } else if (Acceptedmoney < itemPrice) {
-        updatedscreencontent.P1 = `avilable items: ${requiredItem.total}`;
+      } else if (acceptedMoney < itemPrice) {
+        updatedscreencontent.P1 = `Accepted Money :${acceptedMoney}`;
         updatedscreencontent.P2 = "Not Enough money ,insert More!";
         updatedscreencontent.P3 = `Price: ${requiredItem.price}$`;
       } else {
         setbuttondisable(false);
         setproductexist(false);
         dispatch(MachineActions.reset());
-        change += Acceptedmoney - itemPrice;
+        change += acceptedMoney - itemPrice;
 
         updatedscreencontent.P1 = "Take your product";
         updatedscreencontent.P2 = "";
